@@ -1,60 +1,58 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-function AdminLogin() {
+function AdminLogin({ onLoginSuccess }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // TEMP: Hardcoded login (replace with real auth logic)
-    if (username === "admin" && password === "admin123") {
-      navigate("/admin");
-    } else {
-      alert("Invalid credentials");
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        {
+          username,
+          password,
+        }
+      );
+
+      const token = response.data.token;
+      localStorage.setItem("adminToken", token);
+
+      console.log("✅ JWT Token:", token); // 👈 Log the token
+
+      setError("");
+      onLoginSuccess(); // Redirect to dashboard or protected page
+    } catch (err) {
+      console.error("❌ Login failed:", err);
+      setError("Invalid credentials or server error");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-amber-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-amber-800 mb-6 text-center">
-          Admin Login
-        </h2>
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Username
-            </label>
-            <input
-              type="text"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:outline-none"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-amber-500 focus:outline-none"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-md font-medium transition"
-          >
-            Login
-          </button>
-        </form>
-      </div>
+    <div className="max-w-sm mx-auto mt-20 p-6 bg-white shadow-md rounded-lg">
+      <h2 className="text-xl font-bold mb-4 text-center">Admin Login</h2>
+      <input
+        type="text"
+        placeholder="Username"
+        className="w-full mb-3 p-2 border rounded"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        className="w-full mb-3 p-2 border rounded"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button
+        className="w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700"
+        onClick={handleLogin}
+      >
+        Login
+      </button>
+      {error && <p className="mt-3 text-red-500 text-sm">{error}</p>}
     </div>
   );
 }
