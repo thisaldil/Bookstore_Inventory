@@ -1,4 +1,4 @@
-package com.example.Bookstore_Inventory.controller;
+package com.example.Bookstore_Inventory.Controller;
 
 import com.example.Bookstore_Inventory.security.JwtUtil;
 import com.example.Bookstore_Inventory.service.AdminService;
