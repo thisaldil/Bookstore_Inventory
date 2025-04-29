@@ -8,22 +8,27 @@ public class Admin {
 
     @Id
     private String id;
-    private String username;
-    private String password;
+
+    private String email;     // Google user's email
+    private String name;      // Google user's full name
+    private String picture;   // Profile picture URL
 
     public Admin() {}
 
-    public Admin(String id, String username, String password) {
+    public Admin(String id, String email, String name, String picture) {
         this.id = id;
-        this.username = username;
-        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.picture = picture;
     }
 
     public String getId() { return id; }
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
+    public String getEmail() { return email; }
+    public String getName() { return name; }
+    public String getPicture() { return picture; }
 
     public void setId(String id) { this.id = id; }
-    public void setUsername(String username) { this.username = username; }
-    public void setPassword(String password) { this.password = password; }
+    public void setEmail(String email) { this.email = email; }
+    public void setName(String name) { this.name = name; }
+    public void setPicture(String picture) { this.picture = picture; }
 }
