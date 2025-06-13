@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 
 @Configuration
 public class SecurityConfig {
@@ -13,14 +14,17 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login**").permitAll()
+                        .requestMatchers("/", "/login**", "/error", "/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(login -> login
-                        .loginPage("/oauth2/authorization/google")
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("http://localhost:3000", true) // frontend landing page
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/").permitAll()
+                        .logoutSuccessUrl("http://localhost:3000") // redirect to frontend after logout
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                 );
 
         return http.build();
