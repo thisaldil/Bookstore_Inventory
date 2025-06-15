@@ -23,6 +23,20 @@ public class BookstoreInventoryApplication implements CommandLineRunner {
 	public void run(String... args) {
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		String encodedPassword = passwordEncoder.encode("admin123");
-		adminRepository.save(new Admin(null, "admin", encodedPassword));
+
+		if (adminRepository.findByUsername("admin") == null) {
+			Admin admin = new Admin(
+					"admin@gmail.com",
+					"Admin User",
+					"https://example.com/image.jpg",
+					"admin",
+					encodedPassword
+			);
+			adminRepository.save(admin);
+
+			System.out.println("✅ Admin inserted with username: admin, encoded password: " + encodedPassword);
+		}
 	}
+
+
 }

@@ -13,12 +13,17 @@ public class Admin {
     private String name;
     private String picture;
 
+    private String username;
+    private String password;
+
     public Admin() {}
 
-    public Admin(String email, String name, String picture) {
+    public Admin(String email, String name, String picture, String username, String password) {
         this.email = email;
         this.name = name;
         this.picture = picture;
+        this.username = username;
+        this.password = password;
     }
 
     public String getId() {
@@ -37,6 +42,14 @@ public class Admin {
         return picture;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -51,5 +64,13 @@ public class Admin {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

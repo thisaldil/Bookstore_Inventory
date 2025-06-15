@@ -14,14 +14,21 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login**", "/error", "/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/login**",
+                                "/error",
+                                "/api/auth/**",
+                                "/api/books/**",        // ✅ Allow book APIs
+                                "/uploads/**"           // ✅ If serving PDFs from here
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("http://localhost:3000", true) // frontend landing page
+                        .defaultSuccessUrl("http://localhost:3000", true)
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("http://localhost:3000") // redirect to frontend after logout
+                        .logoutSuccessUrl("http://localhost:3000")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())

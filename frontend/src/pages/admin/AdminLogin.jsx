@@ -1,28 +1,34 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function AdminLogin({ onLoginSuccess }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
+
   const handleLogin = async () => {
     try {
       const response = await axios.post(
         "http://localhost:8080/api/auth/login",
-        {
-          username,
-          password,
-        }
+        { username, password }
       );
 
       const token = response.data.token;
       localStorage.setItem("adminToken", token);
 
-      console.log("✅ JWT Token:", token); // 👈 Log the token
+      console.log("✅ JWT Token:", token);
 
       setError("");
-      onLoginSuccess(); // Redirect to dashboard or protected page
+
+      // ✅ Use passed-in function OR fallback to redirect
+      if (typeof onLoginSuccess === "function") {
+        onLoginSuccess();
+      } else {
+        navigate("/admin"); // fallback redirect
+      }
     } catch (err) {
       console.error("❌ Login failed:", err);
       setError("Invalid credentials or server error");

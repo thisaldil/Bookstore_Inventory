@@ -8,9 +8,7 @@ import { books } from "./data/books";
 
 // Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminBookList from "./pages/admin/AdminBookList";
-import AddBook from "./pages/admin/AddBook";
-import EditBook from "./pages/admin/EditBook";
+
 import AdminLogin from "./pages/admin/AdminLogin";
 
 function HomePage() {
@@ -59,9 +57,6 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/books" element={<AdminBookList />} />
-        <Route path="/admin/books/add" element={<AddBook />} />
-        <Route path="/admin/books/edit/:id" element={<EditBook />} />
       </Routes>
     </div>
   );
