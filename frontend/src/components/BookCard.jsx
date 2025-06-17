@@ -9,7 +9,7 @@ function BookCard({ book, onClick }) {
       <div className="bg-white rounded-lg overflow-hidden shadow-md h-full flex flex-col">
         <div className="relative pb-[150%]">
           <img
-            src={book.coverImage}
+            src={book.coverImageUrl}
             alt={`${book.title} cover`}
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -21,7 +21,7 @@ function BookCard({ book, onClick }) {
           <p className="text-sm text-gray-600 mb-2">{book.author}</p>
           <div className="mt-auto">
             <span className="inline-block px-2 py-1 text-xs rounded-full bg-amber-100 text-amber-800">
-              {book.genre}
+              {book.category}
             </span>
           </div>
         </div>

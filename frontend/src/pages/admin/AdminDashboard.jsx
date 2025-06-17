@@ -57,6 +57,8 @@ const BookstoreAdminDashboard = () => {
     available: true,
     coverImageUrl: "", // ✅ URL
     pdfFile: null, // ✅ File
+    pages: "",
+    Published: "",
   });
 
   const [editForm, setEditForm] = useState({
@@ -68,6 +70,8 @@ const BookstoreAdminDashboard = () => {
     coverImageUrl: "",
     pdfUrl: "",
     newPdfFile: null, // ✅ add this
+    pages: "",
+    Published: "",
   });
 
   const categories = [
@@ -143,6 +147,8 @@ const BookstoreAdminDashboard = () => {
       available: book.available ?? true,
       coverImageUrl: book.coverImageUrl || "",
       pdfUrl: book.pdfUrl || "",
+      pages: book.pages || "",
+      Published: book.published || "",
     });
     setShowEditModal(true);
   };
@@ -152,6 +158,8 @@ const BookstoreAdminDashboard = () => {
     if (
       !uploadForm.title ||
       !uploadForm.author ||
+      !uploadForm.pages ||
+      !uploadForm.Published ||
       !uploadForm.pdfFile ||
       !uploadForm.coverImageUrl
     ) {
@@ -168,10 +176,11 @@ const BookstoreAdminDashboard = () => {
       formData.append("author", uploadForm.author);
       formData.append("description", uploadForm.description);
       formData.append("category", uploadForm.category);
-      formData.append("available", uploadForm.available);
-      formData.append("coverImageUrl", uploadForm.coverImageUrl); // ✅ URL
-      formData.append("pdf", uploadForm.pdfFile); // ✅ Match @RequestParam("pdf")
-
+      formData.append("available", uploadForm.available.toString());
+      formData.append("coverImageUrl", uploadForm.coverImageUrl);
+      formData.append("pdf", uploadForm.pdfFile);
+      formData.append("pages", uploadForm.pages);
+      formData.append("published", uploadForm.Published);
       await api.uploadBook(formData);
 
       setUploadForm({
@@ -182,6 +191,8 @@ const BookstoreAdminDashboard = () => {
         available: true,
         coverImageUrl: "",
         pdfFile: null,
+        pages: "",
+        Published: "",
       });
       setShowUploadModal(false);
       await loadBooks();
@@ -205,7 +216,9 @@ const BookstoreAdminDashboard = () => {
       formData.append("category", editForm.category);
       formData.append("available", editForm.available);
       formData.append("coverImageUrl", editForm.coverImageUrl);
-      formData.append("pdfUrl", editForm.pdfUrl); // keep old value unless replaced
+      formData.append("pdfUrl", editForm.pdfUrl);
+      formData.append("pages", editForm.pages);
+      formData.append("published", editForm.Published);
 
       if (editForm.newPdfFile) {
         formData.append("pdf", editForm.newPdfFile); // new file selected
@@ -498,6 +511,24 @@ const BookstoreAdminDashboard = () => {
                 }
                 className="w-full p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500"
               />
+              <input
+                type="number"
+                placeholder="pages *"
+                value={uploadForm.pages}
+                onChange={(e) =>
+                  setUploadForm({ ...uploadForm, pages: e.target.value })
+                }
+                className="w-full p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+              />
+              <input
+                type="date"
+                placeholder="Published *"
+                value={uploadForm.Published}
+                onChange={(e) =>
+                  setUploadForm({ ...uploadForm, Published: e.target.value })
+                }
+                className="w-full p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+              />
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Cover Image URL
@@ -635,6 +666,26 @@ const BookstoreAdminDashboard = () => {
                 }
                 className="w-full p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500"
               />
+              <input
+                type="number"
+                placeholder="pages *"
+                value={editForm.pages}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, pages: e.target.value })
+                }
+                className="w-full p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+              />
+
+              <input
+                type="date"
+                placeholder="Published *"
+                value={editForm.Published}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, Published: e.target.value })
+                }
+                className="w-full p-3 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+              />
+
               <input
                 type="url"
                 placeholder="Cover Image URL"

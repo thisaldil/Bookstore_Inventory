@@ -2,6 +2,7 @@ package com.example.Bookstore_Inventory.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.time.LocalDate;
 
 @Document(collection = "books")
 public class Book {
@@ -16,11 +17,14 @@ public class Book {
     private String coverImageUrl;
     private boolean available;
     private String pdfUrl;
+    private int pages;
+    private LocalDate published;
 
     public Book() {}
 
     public Book(String title, String author, String description, String category,
-                String coverImageUrl, boolean available, String pdfUrl) {
+                String coverImageUrl, boolean available, String pdfUrl,
+                int pages, LocalDate published) {
         this.title = title;
         this.author = author;
         this.description = description;
@@ -28,69 +32,39 @@ public class Book {
         this.coverImageUrl = coverImageUrl;
         this.available = available;
         this.pdfUrl = pdfUrl;
+        this.pages = pages;
+        this.published = published;
     }
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    // getters and setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public String getAuthor() { return author; }
+    public void setAuthor(String author) { this.author = author; }
 
-    public String getAuthor() {
-        return author;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getCoverImageUrl() { return coverImageUrl; }
+    public void setCoverImageUrl(String coverImageUrl) { this.coverImageUrl = coverImageUrl; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public boolean isAvailable() { return available; }
+    public void setAvailable(boolean available) { this.available = available; }
 
-    public String getCategory() {
-        return category;
-    }
+    public String getPdfUrl() { return pdfUrl; }
+    public void setPdfUrl(String pdfUrl) { this.pdfUrl = pdfUrl; }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public int getPages() { return pages; }
+    public void setPages(int pages) { this.pages = pages; }
 
-    public String getCoverImageUrl() {
-        return coverImageUrl;
-    }
-
-    public void setCoverImageUrl(String coverImageUrl) {
-        this.coverImageUrl = coverImageUrl;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    public String getPdfUrl() {
-        return pdfUrl;
-    }
-
-    public void setPdfUrl(String pdfUrl) {
-        this.pdfUrl = pdfUrl;
-    }
+    public LocalDate getPublished() { return published; }
+    public void setPublished(LocalDate published) { this.published = published; }
 }

@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,8 +34,14 @@ public class BookController {
             @RequestParam("description") String description,
             @RequestParam("category") String category,
             @RequestParam("coverImageUrl") String coverImageUrl,
-            @RequestParam("available") boolean available
+            @RequestParam("available") boolean available,
+            @RequestParam("pages") int pages,
+            @RequestParam("published") String published
     ) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         String originalName = file.getOriginalFilename().replaceAll("[^a-zA-Z0-9.\\-]", "_");
         String filename = UUID.randomUUID() + "_" + originalName;
 
@@ -45,7 +54,15 @@ public class BookController {
         }
 
         String pdfUrl = "http://localhost:8080/uploads/" + filename;
-        Book book = new Book(title, author, description, category, coverImageUrl, available, pdfUrl);
+
+        LocalDate publishedDate;
+        try {
+            publishedDate = LocalDate.parse(published, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Book book = new Book(title, author, description, category, coverImageUrl, available, pdfUrl, pages, publishedDate);
         return ResponseEntity.ok(bookRepository.save(book));
     }
 
@@ -81,6 +98,8 @@ public class BookController {
             @RequestParam("available") boolean available,
             @RequestParam("coverImageUrl") String coverImageUrl,
             @RequestParam("pdfUrl") String existingPdfUrl,
+            @RequestParam("pages") int pages,
+            @RequestParam("published") String published,
             @RequestParam(value = "pdf", required = false) MultipartFile newPdfFile
     ) {
         return bookRepository.findById(id)
@@ -101,6 +120,13 @@ public class BookController {
                         }
                     }
 
+                    LocalDate publishedDate;
+                    try {
+                        publishedDate = LocalDate.parse(published, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    } catch (DateTimeParseException e) {
+                        throw new RuntimeException("Invalid date format", e);
+                    }
+
                     // Update book properties
                     existingBook.setTitle(title);
                     existingBook.setAuthor(author);
@@ -109,6 +135,8 @@ public class BookController {
                     existingBook.setAvailable(available);
                     existingBook.setCoverImageUrl(coverImageUrl);
                     existingBook.setPdfUrl(pdfUrl);
+                    existingBook.setPages(pages);
+                    existingBook.setPublished(publishedDate);
 
                     return ResponseEntity.ok(bookRepository.save(existingBook));
                 })
