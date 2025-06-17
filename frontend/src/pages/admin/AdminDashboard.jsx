@@ -79,6 +79,7 @@ const BookstoreAdminDashboard = () => {
     "Romance",
     "Mystery",
     "Fantasy",
+    "Novel",
   ];
 
   // Load books on component mount
@@ -294,7 +295,7 @@ const BookstoreAdminDashboard = () => {
             <div className="flex items-center space-x-3">
               <BookOpen className="h-8 w-8 text-amber-100" />
               <h1 className="text-2xl font-bold text-amber-50">
-                BookVault Admin
+                ReadWell Books Admin
               </h1>
             </div>
             <div className="flex items-center space-x-4">
