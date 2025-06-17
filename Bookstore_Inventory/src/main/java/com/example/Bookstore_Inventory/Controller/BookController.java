@@ -26,45 +26,11 @@ public class BookController {
     private BookRepository bookRepository;
 
     // Upload a new book with PDF
-    @PostMapping("/upload")
-    public ResponseEntity<Book> uploadBook(
-            @RequestParam("pdf") MultipartFile file,
-            @RequestParam("title") String title,
-            @RequestParam("author") String author,
-            @RequestParam("description") String description,
-            @RequestParam("category") String category,
-            @RequestParam("coverImageUrl") String coverImageUrl,
-            @RequestParam("available") boolean available,
-            @RequestParam("pages") int pages,
-            @RequestParam("published") String published
-    ) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        String originalName = file.getOriginalFilename().replaceAll("[^a-zA-Z0-9.\\-]", "_");
-        String filename = UUID.randomUUID() + "_" + originalName;
-
-        Path path = Paths.get("uploads/" + filename);
-        try {
-            Files.createDirectories(path.getParent());
-            Files.copy(file.getInputStream(), path);
-        } catch (IOException e) {
-            return ResponseEntity.status(500).build();
-        }
-
-        String pdfUrl = "http://localhost:8080/uploads/" + filename;
-
-        LocalDate publishedDate;
-        try {
-            publishedDate = LocalDate.parse(published, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        } catch (DateTimeParseException e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Book book = new Book(title, author, description, category, coverImageUrl, available, pdfUrl, pages, publishedDate);
+    @PostMapping
+    public ResponseEntity<Book> createBook(@RequestBody Book book) {
         return ResponseEntity.ok(bookRepository.save(book));
     }
+
 
     // Get all books
     @GetMapping
@@ -89,57 +55,21 @@ public class BookController {
 
     // Update a book, including optional PDF replacement
     @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(
-            @PathVariable String id,
-            @RequestParam("title") String title,
-            @RequestParam("author") String author,
-            @RequestParam("description") String description,
-            @RequestParam("category") String category,
-            @RequestParam("available") boolean available,
-            @RequestParam("coverImageUrl") String coverImageUrl,
-            @RequestParam("pdfUrl") String existingPdfUrl,
-            @RequestParam("pages") int pages,
-            @RequestParam("published") String published,
-            @RequestParam(value = "pdf", required = false) MultipartFile newPdfFile
-    ) {
+    public ResponseEntity<Book> updateBook(@PathVariable String id, @RequestBody Book updatedBook) {
         return bookRepository.findById(id)
                 .map(existingBook -> {
-                    String pdfUrl = existingPdfUrl;
-
-                    // Handle PDF file upload if provided
-                    if (newPdfFile != null && !newPdfFile.isEmpty()) {
-                        try {
-                            String originalName = newPdfFile.getOriginalFilename().replaceAll("[^a-zA-Z0-9.\\-]", "_");
-                            String filename = UUID.randomUUID() + "_" + originalName;
-                            Path path = Paths.get("uploads/" + filename);
-                            Files.createDirectories(path.getParent());
-                            Files.copy(newPdfFile.getInputStream(), path);
-                            pdfUrl = "http://localhost:8080/uploads/" + filename;
-                        } catch (IOException e) {
-                            throw new RuntimeException("File upload failed", e);
-                        }
-                    }
-
-                    LocalDate publishedDate;
-                    try {
-                        publishedDate = LocalDate.parse(published, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    } catch (DateTimeParseException e) {
-                        throw new RuntimeException("Invalid date format", e);
-                    }
-
-                    // Update book properties
-                    existingBook.setTitle(title);
-                    existingBook.setAuthor(author);
-                    existingBook.setDescription(description);
-                    existingBook.setCategory(category);
-                    existingBook.setAvailable(available);
-                    existingBook.setCoverImageUrl(coverImageUrl);
-                    existingBook.setPdfUrl(pdfUrl);
-                    existingBook.setPages(pages);
-                    existingBook.setPublished(publishedDate);
-
+                    existingBook.setTitle(updatedBook.getTitle());
+                    existingBook.setAuthor(updatedBook.getAuthor());
+                    existingBook.setDescription(updatedBook.getDescription());
+                    existingBook.setCategory(updatedBook.getCategory());
+                    existingBook.setAvailable(updatedBook.isAvailable());
+                    existingBook.setCoverImageUrl(updatedBook.getCoverImageUrl());
+                    existingBook.setPdfUrl(updatedBook.getPdfUrl());
+                    existingBook.setPages(updatedBook.getPages());
+                    existingBook.setPublished(updatedBook.getPublished());
                     return ResponseEntity.ok(bookRepository.save(existingBook));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
 }

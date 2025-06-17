@@ -29,11 +29,6 @@ const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(book),
     }),
-  uploadBook: (formData) =>
-    fetch(`${API_URL}/upload`, {
-      method: "POST",
-      body: formData,
-    }),
 };
 
 const BookstoreAdminDashboard = () => {
@@ -153,8 +148,36 @@ const BookstoreAdminDashboard = () => {
     setShowEditModal(true);
   };
 
+  const uploadPdfToCloudinary = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "pdf_upload"); // your unsigned preset
+      // Do NOT include resource_type in FormData — it's part of the URL
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/df7l4fer1/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || "Upload failed");
+      }
+
+      return data.secure_url; // Final public URL of the uploaded PDF
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      throw error;
+    }
+  };
+
   const handleUploadSubmit = async (e) => {
     e.preventDefault();
+
     if (
       !uploadForm.title ||
       !uploadForm.author ||
@@ -171,18 +194,29 @@ const BookstoreAdminDashboard = () => {
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("title", uploadForm.title);
-      formData.append("author", uploadForm.author);
-      formData.append("description", uploadForm.description);
-      formData.append("category", uploadForm.category);
-      formData.append("available", uploadForm.available.toString());
-      formData.append("coverImageUrl", uploadForm.coverImageUrl);
-      formData.append("pdf", uploadForm.pdfFile);
-      formData.append("pages", uploadForm.pages);
-      formData.append("published", uploadForm.Published);
-      await api.uploadBook(formData);
+      // 1. Upload PDF to Cloudinary
+      const pdfUrl = await uploadPdfToCloudinary(uploadForm.pdfFile);
 
+      // 2. Save the book to your backend (MongoDB)
+      const bookData = {
+        title: uploadForm.title,
+        author: uploadForm.author,
+        description: uploadForm.description,
+        category: uploadForm.category,
+        available: uploadForm.available,
+        coverImageUrl: uploadForm.coverImageUrl,
+        pdfUrl: pdfUrl,
+        pages: uploadForm.pages,
+        published: uploadForm.Published,
+      };
+
+      await fetch("http://localhost:8080/api/books", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookData),
+      });
+
+      // Reset form
       setUploadForm({
         title: "",
         author: "",
@@ -197,8 +231,8 @@ const BookstoreAdminDashboard = () => {
       setShowUploadModal(false);
       await loadBooks();
     } catch (err) {
-      alert("Failed to upload book. Please try again.");
       console.error("Error uploading book:", err);
+      alert("Upload failed. Check console.");
     } finally {
       setUploading(false);
     }
@@ -206,27 +240,27 @@ const BookstoreAdminDashboard = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-
     setUpdating(true);
-    try {
-      const formData = new FormData();
-      formData.append("title", editForm.title);
-      formData.append("author", editForm.author);
-      formData.append("description", editForm.description);
-      formData.append("category", editForm.category);
-      formData.append("available", editForm.available);
-      formData.append("coverImageUrl", editForm.coverImageUrl);
-      formData.append("pdfUrl", editForm.pdfUrl);
-      formData.append("pages", editForm.pages);
-      formData.append("published", editForm.Published);
 
-      if (editForm.newPdfFile) {
-        formData.append("pdf", editForm.newPdfFile); // new file selected
-      }
+    try {
+      const updatedBook = {
+        title: editForm.title,
+        author: editForm.author,
+        description: editForm.description,
+        category: editForm.category,
+        available: editForm.available,
+        coverImageUrl: editForm.coverImageUrl,
+        pdfUrl: editForm.pdfUrl,
+        pages: editForm.pages,
+        published: editForm.Published,
+      };
 
       await fetch(`${API_URL}/${editingBook.id}`, {
         method: "PUT",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedBook),
       });
 
       await loadBooks();

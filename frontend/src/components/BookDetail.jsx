@@ -1,33 +1,18 @@
+// ✅ Updated BookDetail.jsx using @react-pdf-viewer for Cloudinary
 import React, { useState } from "react";
-import {
-  ArrowLeft,
-  Bookmark,
-  Share,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  BookOpen,
-} from "lucide-react";
-import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+import { ArrowLeft, Bookmark, Share, BookOpen } from "lucide-react";
+import { Worker, Viewer } from "@react-pdf-viewer/core";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 function BookReader({ book, isOpen, onClose }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [numPages, setNumPages] = useState(null);
-
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setNumPages(numPages);
-    setCurrentPage(1);
-  };
-
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl h-full max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-6xl h-full max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-amber-50 to-orange-50">
           <div className="flex items-center gap-3">
@@ -40,50 +25,20 @@ function BookReader({ book, isOpen, onClose }) {
             onClick={onClose}
             className="p-2 hover:bg-gray-200 rounded-full transition-colors"
           >
-            <X size={24} className="text-gray-600" />
+            ✕
           </button>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 p-8 overflow-y-auto bg-gradient-to-br from-amber-50 to-orange-50 flex justify-center">
-          <Document
-            file={book.pdfUrl}
-            onLoadSuccess={onDocumentLoadSuccess}
-            loading={<p className="text-gray-700">Loading PDF...</p>}
-            error={<p className="text-red-500">Failed to load PDF.</p>}
+        {/* PDF Viewer */}
+        <div className="flex-1 bg-gradient-to-br from-amber-50 to-orange-50 overflow-hidden">
+          <Worker
+            workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}
           >
-            <Page
-              pageNumber={currentPage}
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
-              width={600}
+            <Viewer
+              fileUrl={book.pdfUrl}
+              plugins={[defaultLayoutPluginInstance]}
             />
-          </Document>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between p-6 border-t bg-white">
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage <= 1}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
-          >
-            <ChevronLeft size={20} />
-            Previous
-          </button>
-
-          <span className="text-gray-600">
-            Page {currentPage} of {numPages}
-          </span>
-
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(numPages, p + 1))}
-            disabled={currentPage >= numPages}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
-          >
-            Next
-            <ChevronRight size={20} />
-          </button>
+          </Worker>
         </div>
       </div>
     </div>
