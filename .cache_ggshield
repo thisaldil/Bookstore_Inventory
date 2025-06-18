@@ -1,1 +1,1 @@
-{"last_found_secrets": [{"match": "84cb5c0a66dcf9f973bb4d866d962eb1c813f50d4bcdcc3e1cbeb2ac9cc19c39", "name": "Google OAuth2 Keys - Bookstore_Inventory\\src\\main\\resources\\application.properties"}, {"match": "445e55f16377b6f9bd45fbc11dd7f39320667637b7cb3edc7fb8ae91892dc5e8", "name": "Username Password - Bookstore_Inventory\\.env"}]}
+{"last_found_secrets": [{"name": "Username Password - Bookstore_Inventory\\.env", "match": "445e55f16377b6f9bd45fbc11dd7f39320667637b7cb3edc7fb8ae91892dc5e8"}]}
