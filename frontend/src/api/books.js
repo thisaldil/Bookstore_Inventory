@@ -1,5 +1,4 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/books";
-
+const API_URL = "https://bookstore-inventory-nk4s.onrender.com/api/books";
 export const getBooks = () => axios.get(API_URL);
