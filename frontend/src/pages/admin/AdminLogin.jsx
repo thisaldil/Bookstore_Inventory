@@ -14,7 +14,7 @@ function AdminLogin({ onLoginSuccess }) {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
+        "https://bookstore-inventory-nk4s.onrender.com/api/auth/login",
         { username, password }
       );
 

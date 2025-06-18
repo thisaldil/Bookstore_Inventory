@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 
 // API functions (replace with your actual API file import)
-const API_URL = "http://localhost:8080/api/books";
+const API_URL = "https://bookstore-inventory-nk4s.onrender.com/api/books";
 
 const api = {
   getBooks: () => fetch(API_URL).then((res) => res.json()),
