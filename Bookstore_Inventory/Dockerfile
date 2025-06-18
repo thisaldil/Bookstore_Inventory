@@ -1,14 +1,17 @@
-# Use official lightweight OpenJDK image
-FROM openjdk:17-jdk-slim
+# Use Maven to build the app
+FROM maven:3.9.5-eclipse-temurin-17 as builder
 
-# Create directory inside the container
 WORKDIR /app
-
-# Copy project files into the container
 COPY . .
+RUN mvn clean package -DskipTests
 
-# Package the application (skip tests)
-RUN ./mvnw clean package -DskipTests
+# Final lightweight image to run
+FROM eclipse-temurin:17-jdk-alpine
 
-# Run the Spring Boot app
-CMD ["java", "-jar", "target/*.jar"]
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+
+# Expose port used by Spring Boot
+EXPOSE 8080
+
+CMD ["java", "-jar", "app.jar"]
