@@ -87,6 +87,13 @@ const BookstoreAdminDashboard = () => {
     loadBooks();
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/adminlogin"; // redirect to admin login page
+    }
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("token"); // or any session key you're using
     window.location.href = "/"; // or redirect to login page

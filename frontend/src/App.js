@@ -9,6 +9,9 @@ import { getBooks } from "./api/books";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 
+// Protected route component
+import ProtectedRoute from "./components/ProtectedRoute";
+
 function HomePage() {
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -71,7 +74,14 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </div>
   );
