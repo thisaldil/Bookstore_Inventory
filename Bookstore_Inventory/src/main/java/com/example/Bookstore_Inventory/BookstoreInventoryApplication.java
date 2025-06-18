@@ -22,21 +22,32 @@ public class BookstoreInventoryApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		String encodedPassword = passwordEncoder.encode("admin123");
 
-		if (adminRepository.findByUsername("admin") == null) {
+		String username = System.getenv("ADMIN_USERNAME");
+		String rawPassword = System.getenv("ADMIN_PASSWORD");
+		String email = System.getenv("ADMIN_EMAIL");
+		String name = System.getenv("ADMIN_NAME");
+		String image = System.getenv("ADMIN_IMAGE");
+
+		if (username == null || rawPassword == null) {
+			System.err.println("❌ ADMIN_USERNAME or ADMIN_PASSWORD is not set in environment variables.");
+			return;
+		}
+
+		String encodedPassword = passwordEncoder.encode(rawPassword);
+
+		if (adminRepository.findByUsername(username) == null) {
 			Admin admin = new Admin(
-					"admin@gmail.com",
-					"Admin User",
-					"https://example.com/image.jpg",
-					"admin",
+					email,
+					name,
+					image,
+					username,
 					encodedPassword
 			);
 			adminRepository.save(admin);
-
-			System.out.println("✅ Admin inserted with username: admin, encoded password: " + encodedPassword);
+			System.out.println("✅ Admin created: " + username);
+		} else {
+			System.out.println("ℹ️ Admin already exists: " + username);
 		}
 	}
-
-
 }
