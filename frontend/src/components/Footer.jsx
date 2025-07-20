@@ -52,7 +52,7 @@ function Footer() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: subscriptionData.name,
+            name: subscriptionData.fullName,
             email: subscriptionData.email,
           }),
         }
