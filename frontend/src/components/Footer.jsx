@@ -13,7 +13,7 @@ import {
 
 function Footer() {
   const [subscriptionData, setSubscriptionData] = useState({
-    name: "",
+    fullName: "",
     email: "",
   });
   const [subscriptionStatus, setSubscriptionStatus] = useState(null); // null, 'success', 'error'
