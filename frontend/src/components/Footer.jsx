@@ -13,7 +13,7 @@ import {
 
 function Footer() {
   const [subscriptionData, setSubscriptionData] = useState({
-    name: "",
+    fullName: "",
     email: "",
   });
   const [subscriptionStatus, setSubscriptionStatus] = useState(null); // null, 'success', 'error'
@@ -30,7 +30,7 @@ function Footer() {
   const handleSubscribe = async (e) => {
     e.preventDefault();
 
-    if (!subscriptionData.name.trim() || !subscriptionData.email.trim()) {
+    if (!subscriptionData.fullName.trim() || !subscriptionData.email.trim()) {
       setSubscriptionStatus("error");
       return;
     }
@@ -48,12 +48,12 @@ function Footer() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       console.log("Customer data:", {
-        name: subscriptionData.name,
+        name: subscriptionData.fullName,
         email: subscriptionData.email,
       });
 
       setSubscriptionStatus("success");
-      setSubscriptionData({ name: "", email: "" });
+      setSubscriptionData({ fullName: "", email: "" });
     } catch (error) {
       console.error("Subscription error:", error);
       setSubscriptionStatus("error");
@@ -172,9 +172,9 @@ function Footer() {
             <div className="space-y-3">
               <input
                 type="text"
-                name="name"
+                name="fullName"
                 placeholder="Your Name"
-                value={subscriptionData.name}
+                value={subscriptionData.fullName}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 disabled={isLoading}
