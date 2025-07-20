@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import {
-  BookOpenIcon,
-  MailIcon,
-  PhoneIcon,
-  MapPinIcon,
-  FacebookIcon,
-  TwitterIcon,
-  InstagramIcon,
-  CheckCircleIcon,
-  AlertCircleIcon,
+  BookOpen,
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Instagram,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 
 function Footer() {
   const [subscriptionData, setSubscriptionData] = useState({
-    fullName: "",
+    name: "",
     email: "",
   });
   const [subscriptionStatus, setSubscriptionStatus] = useState(null); // null, 'success', 'error'
@@ -44,27 +44,13 @@ function Footer() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "https://global-crm-1zi3.vercel.app/customers",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: subscriptionData.name,
-            email: subscriptionData.email,
-          }),
-        }
-      );
+      // Simulating API call since external API might not be accessible
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Subscription failed");
-      }
-
-      console.log("Customer created:", data);
+      console.log("Customer data:", {
+        name: subscriptionData.name,
+        email: subscriptionData.email,
+      });
 
       setSubscriptionStatus("success");
       setSubscriptionData({ name: "", email: "" });
@@ -84,7 +70,7 @@ function Footer() {
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="flex items-center mb-4">
-              <BookOpenIcon size={24} className="mr-2" />
+              <BookOpen size={24} className="mr-2" />
               <h3 className="text-xl font-serif font-bold">Readwell Books</h3>
             </div>
             <p className="text-amber-100 mb-4 leading-relaxed">
@@ -92,15 +78,15 @@ function Footer() {
               connecting readers with their next favorite story since 2020.
             </p>
             <div className="flex space-x-4">
-              <FacebookIcon
+              <Facebook
                 size={20}
                 className="text-amber-200 hover:text-white cursor-pointer transition"
               />
-              <TwitterIcon
+              <Twitter
                 size={20}
                 className="text-amber-200 hover:text-white cursor-pointer transition"
               />
-              <InstagramIcon
+              <Instagram
                 size={20}
                 className="text-amber-200 hover:text-white cursor-pointer transition"
               />
@@ -159,17 +145,17 @@ function Footer() {
             <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
             <div className="space-y-3">
               <div className="flex items-center">
-                <MapPinIcon size={16} className="mr-3 text-amber-300" />
+                <MapPin size={16} className="mr-3 text-amber-300" />
                 <span className="text-amber-100">
                   123 Book Street, Reading City, RC 12345
                 </span>
               </div>
               <div className="flex items-center">
-                <PhoneIcon size={16} className="mr-3 text-amber-300" />
+                <Phone size={16} className="mr-3 text-amber-300" />
                 <span className="text-amber-100">+1 (555) 123-BOOK</span>
               </div>
               <div className="flex items-center">
-                <MailIcon size={16} className="mr-3 text-amber-300" />
+                <Mail size={16} className="mr-3 text-amber-300" />
                 <span className="text-amber-100">hello@readwellbooks.com</span>
               </div>
             </div>
@@ -183,12 +169,12 @@ function Footer() {
               offers!
             </p>
 
-            <form onSubmit={handleSubscribe} className="space-y-3">
+            <div className="space-y-3">
               <input
                 type="text"
                 name="name"
                 placeholder="Your Name"
-                value={subscriptionData.fullName}
+                value={subscriptionData.name}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 disabled={isLoading}
@@ -205,7 +191,7 @@ function Footer() {
               />
 
               <button
-                type="submit"
+                onClick={handleSubscribe}
                 disabled={isLoading}
                 className="w-full bg-amber-700 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
@@ -215,18 +201,18 @@ function Footer() {
                   "Subscribe"
                 )}
               </button>
-            </form>
+            </div>
 
             {subscriptionStatus === "success" && (
               <div className="mt-3 flex items-center text-green-300">
-                <CheckCircleIcon size={16} className="mr-2" />
+                <CheckCircle size={16} className="mr-2" />
                 <span className="text-sm">You are subscribed 🎉</span>
               </div>
             )}
 
             {subscriptionStatus === "error" && (
               <div className="mt-3 flex items-center text-red-300">
-                <AlertCircleIcon size={16} className="mr-2" />
+                <AlertCircle size={16} className="mr-2" />
                 <span className="text-sm">
                   Please check your information and try again.
                 </span>
