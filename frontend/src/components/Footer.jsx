@@ -44,13 +44,27 @@ function Footer() {
     setIsLoading(true);
 
     try {
-      // Simulating API call since external API might not be accessible
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(
+        "https://global-crm-1zi3.vercel.app/customers",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullName: subscriptionData.fullName, // ✅ correct field
+            email: subscriptionData.email,
+          }),
+        }
+      );
 
-      console.log("Customer data:", {
-        name: subscriptionData.fullName,
-        email: subscriptionData.email,
-      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Subscription failed");
+      }
+
+      console.log("Customer created:", data);
 
       setSubscriptionStatus("success");
       setSubscriptionData({ fullName: "", email: "" });
