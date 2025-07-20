@@ -217,11 +217,10 @@ function Footer() {
               </button>
             </form>
 
-            {/* Status Messages */}
             {subscriptionStatus === "success" && (
               <div className="mt-3 flex items-center text-green-300">
                 <CheckCircleIcon size={16} className="mr-2" />
-                <span className="text-sm">Successfully subscribed!</span>
+                <span className="text-sm">You are subscribed 🎉</span>
               </div>
             )}
 
