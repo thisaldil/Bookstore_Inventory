@@ -188,7 +188,7 @@ function Footer() {
                 type="text"
                 name="name"
                 placeholder="Your Name"
-                value={subscriptionData.FullName}
+                value={subscriptionData.fullName}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 disabled={isLoading}
