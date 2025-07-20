@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import BookList from "./components/BookList";
 import BookDetail from "./components/BookDetail";
 import { getBooks } from "./api/books";
@@ -64,6 +65,7 @@ function HomePage() {
           />
         )}
       </main>
+      <Footer />
     </>
   );
 }
